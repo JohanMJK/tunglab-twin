@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - CinemachineTarget
+  - Shell
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - CustomUI
+  - Shell
   - Water
   - UI
-  - 
+  - 'Free Camera '
   - 
   - 
   - 

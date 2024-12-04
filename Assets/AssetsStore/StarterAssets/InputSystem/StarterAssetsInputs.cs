@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
+
 namespace StarterAssets
 {
 	public class StarterAssetsInputs : MonoBehaviour
@@ -17,11 +18,18 @@ namespace StarterAssets
 		public bool analogMovement;
 
 		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked = true;
-		public bool cursorInputForLook = true;
+		public bool cursorLocked;
+		public bool cursorInputForLook;
+
+		void Update()
+		{
+            cursorLocked = ModeSwitcher.cursorLocked;
+			cursorInputForLook = ModeSwitcher.cursorInputForLook;
+		}
+
 
 #if ENABLE_INPUT_SYSTEM
-		public void OnMove(InputValue value)
+        public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
 		}
