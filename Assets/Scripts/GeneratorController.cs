@@ -81,7 +81,7 @@ public class GeneratorController : MonoBehaviour
     // Method to query the database and update each display
     private async void UpdateDisplaysFromDatabase()
     {
-        string connectionString = "Server=192.168.38.100;Database=tunglab;User ID=remoteuser;Password=123456;";
+        string connectionString = "Server=192.168.38.100;Database=Gruppe4;User ID=remoteuser;Password=123456;";
 
         using (var connection = new MySqlConnection(connectionString))
         {
@@ -96,7 +96,7 @@ public class GeneratorController : MonoBehaviour
                     // Query to get the highest idx (latest entry) for each tagname
                     string query = @"
                         SELECT tagvalue 
-                        FROM Gruppe3Unity 
+                        FROM Tunglabb_data 
                         WHERE tagname = @tagname 
                         ORDER BY idx DESC 
                         LIMIT 1";
@@ -129,7 +129,7 @@ public class GeneratorController : MonoBehaviour
                 {
                     string query = @"
                         SELECT tagvalue 
-                        FROM Gruppe3Unity 
+                        FROM Tunglabb_data 
                         WHERE tagname = @tagname 
                         ORDER BY idx DESC 
                         LIMIT 1";
@@ -166,7 +166,7 @@ public class GeneratorController : MonoBehaviour
                 {
                     string query = @"
                         SELECT tagvalue 
-                        FROM Gruppe3Unity 
+                        FROM Tunglabb_data 
                         WHERE tagname = @tagname 
                         ORDER BY idx DESC 
                         LIMIT 1";
