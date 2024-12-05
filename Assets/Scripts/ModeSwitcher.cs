@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ModeSwitcher : MonoBehaviour
@@ -38,8 +37,6 @@ public class ModeSwitcher : MonoBehaviour
             cursorLocked = !cursorLocked;
             cursorInputForLook = !cursorInputForLook;
             Cursor.visible = !cursorInputForLook;
-
-            //Debug.Log("M pressed");
         }
     }
 
@@ -51,6 +48,6 @@ public class ModeSwitcher : MonoBehaviour
         cam2.SetActive(cam2Active);
         RenderSettings.fog = cam1Active;
 
-        Debug.Log("Button pressed");
+        EventSystem.current.SetSelectedGameObject(null);
     }
 }
