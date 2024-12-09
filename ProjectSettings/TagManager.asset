@@ -14,7 +14,7 @@ TagManager:
   - Water
   - UI
   - 'Free Camera '
-  - 
+  - WorldUI
   - 
   - 
   - 
@@ -42,4 +42,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: SortingLayer1
+    uniqueID: 871817443
+    locked: 0
+  - name: SortingLayer2
+    uniqueID: 3573663169
     locked: 0

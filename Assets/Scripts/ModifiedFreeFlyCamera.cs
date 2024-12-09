@@ -158,10 +158,10 @@ public class ModifiedFreeFlyCamera : MonoBehaviour
         if (!_active)
             return;
 
-        SetCursorState();
+        //SetCursorState();
 
-        if (Cursor.visible)
-            return;
+        //if (Cursor.visible)
+        //    return;
 
         // Translation
         if (_enableTranslation)

@@ -10,6 +10,8 @@ public class SetupScript : MonoBehaviour
         RenderSettings.fogMode = FogMode.Linear;
         RenderSettings.fogStartDistance = 50.0f;
         RenderSettings.fogEndDistance = 100.0f;
+
+        //DatabaseManager.InitializeData();
     }
 
     // Update is called once per frame

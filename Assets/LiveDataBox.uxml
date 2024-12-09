@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="DataBoxRootElement" style="flex-grow: 1; width: 100%; height: 100%; background-color: rgba(103, 0, 0, 0); position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-self: center; align-items: center; flex-basis: auto; visibility: visible; overflow: visible; display: flex;">
+        <ui:VisualElement name="FieldContainer" style="flex-grow: 1; align-self: center; justify-content: center; align-items: flex-start; min-width: 10%; min-height: 20%; max-width: 50%; max-height: 50%; background-color: rgba(77, 77, 77, 0.86);">
+            <ui:TextField picking-mode="Ignore" label="Text Field" value="filler text" style="height: 58px;" />
+            <ui:TextField picking-mode="Ignore" label="Text Field" value="filler text" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
