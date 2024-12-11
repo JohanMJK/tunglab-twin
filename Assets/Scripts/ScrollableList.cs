@@ -13,6 +13,8 @@ public class ScrollableList : MonoBehaviour
     public GameObject dataBoxPrefab;
     public Transform contentParent;
 
+    public ScrollableList() { }
+
     void Start()
     {
         PopulateLists();
@@ -31,17 +33,28 @@ public class ScrollableList : MonoBehaviour
             {
                 if (container.SystemName == SystemName)
                 {
-                    GameObject listItem;
-                    if (container.AlarmActive) { listItem = Instantiate(listItemPrefabRed, contentParent.transform); }
-                    else if (container.NumAlarmsAboveLimit) { listItem = Instantiate(listItemPrefabYellow, contentParent.transform); }
-                    else { listItem = Instantiate(listItemPrefab, contentParent.transform); }
+                    TextMeshProUGUI label;
+                    if (container.AlarmActive) 
+                    { 
+                        Instantiate(listItemPrefabRed, contentParent.transform);
+                        label = listItemPrefabRed.GetComponent<TextMeshProUGUI>();
+                    }
+                    else if (container.NumAlarmsAboveLimit) 
+                    { 
+                        Instantiate(listItemPrefabYellow, contentParent.transform);
+                        label = listItemPrefabYellow.GetComponent<TextMeshProUGUI>();
+                    }
+                    else 
+                    { 
+                        Instantiate(listItemPrefab, contentParent.transform);
+                        label = listItemPrefab.GetComponent<TextMeshProUGUI>();
+                    }
 
-                    var label = listItem.GetComponent<TextMeshProUGUI>();
                     label.text = container.Description;
                     label.fontSize = 7;
                     label.color = Color.black;
 
-                    Debug.Log($"Added: {container.Description}");   
+                    Debug.Log($"Added: {container.Description}");
                 }
             }
         }
