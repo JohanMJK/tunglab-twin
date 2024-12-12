@@ -16,8 +16,8 @@ public static class DatabaseManager
     private static bool populateListsDone;
 
 
-    private static readonly string connectionString = "Server=127.0.0.1;Database=Gruppe4;User ID=root;Password=password;";
-    //private static readonly string connectionString = "Server=192.168.38.100;Database=Gruppe4;User ID=remoteuser;Password=123456;";
+    //private static readonly string connectionString = "Server=127.0.0.1;Database=Gruppe4;User ID=root;Password=password;";
+    private static readonly string connectionString = "Server=192.168.38.100;Database=Gruppe4;User ID=remoteuser;Password=123456;";
 
     public static async Task<Task> PopulateLists()
     {
