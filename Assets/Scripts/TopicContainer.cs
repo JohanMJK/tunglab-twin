@@ -5,6 +5,11 @@ public interface ITopicContainer
 {
     public bool AlarmActive { get; }
     public bool NumAlarmsAboveLimit { get; }
+    public string Description { get; }
+    public bool Running { get; }
+    public float ProcessValue { get; }
+    public int NumAlarms { get; }
+    public string Unit {  get; }
 }
 
 

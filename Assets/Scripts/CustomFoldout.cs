@@ -25,11 +25,11 @@ public class CustomFoldout : Foldout
     {
         if (_container.AlarmActive)
         {
-            this.style.color = Color.red;
+            this.style.color = new Color(0.7f, 0f, 0f, 1f);
         }
         else if (_container.NumAlarmsAboveLimit)
         {
-            this.style.color = Color.yellow;
+            this.style.color = new Color(0.8f, 0.7f, 0f, 1f);
         }
         else
         {

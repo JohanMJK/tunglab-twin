@@ -17,7 +17,6 @@ namespace StarterAssets
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
-		//private bool cursorLocked;
 		private bool cursorInputForLook;
 
 

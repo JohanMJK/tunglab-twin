@@ -1,12 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using UnityEngine.UIElements;
-using TMPro;
-using System.Text;
 
 public class UIManager : MonoBehaviour
 {
@@ -94,6 +90,11 @@ public class UIManager : MonoBehaviour
 
     void SettingsButtonListener()
     {
+        serverField.text = PlayerPrefs.GetString("Server");
+        databaseField.text = PlayerPrefs.GetString("Database");
+        userIDField.text = PlayerPrefs.GetString("UserID");
+        passwordField.text = PlayerPrefs.GetString("Password");
+
         settingsPanel.SetActive(true);
         EventSystem.current.SetSelectedGameObject(null);
     }
@@ -108,10 +109,16 @@ public class UIManager : MonoBehaviour
     {
         DatabaseManager.connectionString = $"Server={serverField.text};Database={databaseField.text};" +
                                         $"User ID={userIDField.text};Password={passwordField.text};";
-        
-        if (DatabaseManager.TestConnection()) 
+
+        PlayerPrefs.SetString("Server", serverField.text);
+        PlayerPrefs.SetString("Database", databaseField.text);
+        PlayerPrefs.SetString("UserID", userIDField.text);
+        PlayerPrefs.SetString("Password", passwordField.text);
+
+        if (DatabaseManager.TestConnection())
         {
             Debug.Log("Connected.");
+            scrollView.Clear();
             await DatabaseManager.PopulateLists();
             PopulateScrollView();
             await DatabaseManager.UpdateLiveData();

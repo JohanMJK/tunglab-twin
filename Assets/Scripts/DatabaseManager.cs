@@ -1,10 +1,7 @@
 ﻿using MySqlConnector;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
-using System.Text;
-using UnityEditor.Search;
+using UnityEngine;
 
 
 public static class DatabaseManager
