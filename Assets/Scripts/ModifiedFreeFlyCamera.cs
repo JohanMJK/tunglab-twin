@@ -18,9 +18,8 @@ public class ModifiedFreeFlyCamera : MonoBehaviour
 
     [Space]
 
-    [SerializeField]
-    [Tooltip("Camera rotation by mouse movement is active")]
-    private bool _enableRotation = true;
+
+    //private bool _enableRotation;
 
     [SerializeField]
     [Tooltip("Sensitivity of mouse rotation")]
@@ -28,9 +27,9 @@ public class ModifiedFreeFlyCamera : MonoBehaviour
 
     [Space]
 
-    [SerializeField]
-    [Tooltip("Camera zooming in/out by 'Mouse Scroll Wheel' is active")]
-    private bool _enableTranslation = true;
+    //[SerializeField]
+    //[Tooltip("Camera zooming in/out by 'Mouse Scroll Wheel' is active")]
+    //private bool _enableTranslation = true;
 
     [SerializeField]
     [Tooltip("Velocity of camera zooming in/out")]
@@ -112,32 +111,30 @@ public class ModifiedFreeFlyCamera : MonoBehaviour
     */
 
     // Apply requested cursor state
-    private void SetCursorState()
-    {
-        /*
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = _wantedMode = CursorLockMode.None;
-        }
+    //private void SetCursorState()
+    //{
+        
+    //    if (Input.GetKeyDown(KeyCode.Escape))
+    //    {
+    //        Cursor.lockState = _wantedMode = CursorLockMode.None;
+    //    }
 
         
-        if (Input.GetMouseButtonDown(0))
-        {
-            _wantedMode = CursorLockMode.Locked;
-        }
-        */
-        // Apply cursor state
-        //Cursor.lockState = _wantedMode;
-        // Hide cursor when locking
-        //Cursor.visible = (CursorLockMode.Locked != _wantedMode);
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        _wantedMode = CursorLockMode.Locked;
+    //    }
+        
+    //    Cursor.lockState = _wantedMode;
+    //    Cursor.visible = (CursorLockMode.Locked != _wantedMode);
 
-        if (ModeSwitcher.cursorLocked)
-            Cursor.lockState = CursorLockMode.Locked;
-        else Cursor.lockState = CursorLockMode.None;
+    //    if (ModeSwitcher.cursorLocked)
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //    else Cursor.lockState = CursorLockMode.None;
 
 
-        Cursor.visible = !ModeSwitcher.cursorLocked;
-    }
+    //    Cursor.visible = !ModeSwitcher.cursorLocked;
+    //}
 
     private void CalculateCurrentIncrease(bool moving)
     {
@@ -164,7 +161,7 @@ public class ModifiedFreeFlyCamera : MonoBehaviour
         //    return;
 
         // Translation
-        if (_enableTranslation)
+        if (ModeSwitcher.cursorInputForLook)
         {
             transform.Translate(Vector3.forward * Input.mouseScrollDelta.y * Time.deltaTime * _translationSpeed);
         }
@@ -203,7 +200,7 @@ public class ModifiedFreeFlyCamera : MonoBehaviour
         }
 
         // Rotation
-        if (_enableRotation)
+        if (ModeSwitcher.cursorInputForLook)
         {
             // Pitch
             transform.rotation *= Quaternion.AngleAxis(

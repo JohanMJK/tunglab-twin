@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEngine.Rendering.DebugUI;
 
-public class TopicContainer
+public interface ITopicContainer
+{
+    public bool AlarmActive { get; }
+    public bool NumAlarmsAboveLimit { get; }
+}
+
+
+public class TopicContainer : ITopicContainer
 {
     public string SystemName { get; set; }
     public string Description { get; set; }
@@ -27,8 +32,28 @@ public class TopicContainer
     public bool NumAlarmsAboveLimit { get; set; }
     public string Timestamp { get; set; }
     public bool IsLive { get; set; }
-    public CustomFoldout customFoldout { get; set; }
-
+    
+   
+    private CustomFoldout _foldout;
+    public CustomFoldout Foldout 
+    { 
+        get
+        {
+            if (AlarmActive)
+            {
+                _foldout.style.color = Color.red;
+            }
+            else if (NumAlarmsAboveLimit)
+            {
+                _foldout.style.color = Color.yellow;
+            }
+            else
+            {
+                _foldout.style.color = Color.black;
+            }
+            return _foldout;
+        }
+    }
 
     public TopicContainer(string systemName, string topic, int topicID, int deviceNo, int channelNo,
                          string description, string signalType, string unit, string range   ,
@@ -56,6 +81,22 @@ public class TopicContainer
         NumAlarms = numAlarms;
         NumAlarmsAboveLimit = numAlarmsAboveLimit;
         IsLive = isLive;
+
+        _foldout = new CustomFoldout(this, topicID, description);
+
+        _foldout.Add(new Label($"Tag: {Tag}"));
+        _foldout.Add(new Label($"Device No.: {DeviceNo}"));
+        _foldout.Add(new Label($"Channel No.: {ChannelNo}"));
+        _foldout.Add(new Label($"Signal Type: {SignalType}"));
+        _foldout.Add(new Label($"Unit: {Unit}"));
+        _foldout.Add(new Label($"Range: {Range}"));
+        _foldout.Add(new Label($"AHH: {AHH}"));
+        _foldout.Add(new Label($"AH: {AH}"));
+        _foldout.Add(new Label($"AL: {AL}"));
+        _foldout.Add(new Label($"ALL: {ALL}"));
+        _foldout.Add(new Label($"Alarm Number Threshold: {NumAlarmsLimit}"));
+        _foldout.Add(new Label($"Topic: {Topic}"));
+        _foldout.Add(new Label($"Topic ID: {TopicID}"));
     }
 
     public TopicContainer(string systemName, string topic, int topicID, int deviceNo, int channelNo,
@@ -78,98 +119,22 @@ public class TopicContainer
         NumAlarmsLimit = numAlarmsLimit;
         Tag = tag;
         IsLive = isLive;
-    }
 
-    public List<string> GetStaticData()
-    {
-        return new List<string>
-        {
-            $"Description: {Description}",
-            $"Device No.: {DeviceNo}",
-            $"Channel No.: {ChannelNo}",
-            $"Signal Type: {SignalType}",
-            $"Unit: {Unit}",
-            $"Range: {Range}",
-            $"AHH: {AHH}",
-            $"AH: {AH}",
-            $"AL: {AL}",
-            $"ALL: {ALL}",
-            $"Alarm Number Threshold: {NumAlarmsLimit}",
-            $"Tag: {Tag}",
-            $"Topic: {Topic}",
-            $"Topic ID: {TopicID}"
-        };
-    }
+        _foldout = new CustomFoldout(this, topicID, description);
 
-    public List<Label> GetStaticDataLabels()
-    {
-        var labels = new List<Label>
-    {
-        new Label($"Tag: {Tag}"),
-        new Label($"Device No.: {DeviceNo}"),
-        new Label($"Channel No.: {ChannelNo}"),
-        new Label($"Signal Type: {SignalType}"),
-        new Label($"Unit: {Unit}"),
-        new Label($"Range: {Range}"),
-        new Label($"AHH: {AHH}"),
-        new Label($"AH: {AH}"),
-        new Label($"AL: {AL}"),
-        new Label($"ALL: {ALL}"),
-        new Label($"Alarm Number Threshold: {NumAlarmsLimit}"),
-        new Label($"Topic: {Topic}"),
-        new Label($"Topic ID: {TopicID}")
-    };
-        return labels;
-    }
-
-    public List<string> GetLiveData()
-    {
-        return new List<string>
-    {
-        $"Description: {Description}",
-        $"Running: {Running}",
-        $"Process Value: {ProcessValue}",
-        $"Alarm Active: {AlarmActive}",
-        $"Number of Alarms: {NumAlarms}"
-    };
-    }
-
-    public CustomFoldout ToFoldout()
-    {
-        var foldout = new CustomFoldout
-        {
-            text = $"{Description}",
-            value = false
-        };
-
-        if (AlarmActive)
-        {
-            foldout.style.color = new StyleColor(Color.red);
-        }
-        else if (NumAlarmsAboveLimit)
-        {
-            foldout.style.color = new StyleColor(Color.yellow);
-        }
-        else
-        {
-            foldout.style.color = new StyleColor(Color.black);
-        }
-
-        foldout.Add(new Label($"Tag: {Tag}"));
-        foldout.Add(new Label($"Device No.: {DeviceNo}"));
-        foldout.Add(new Label($"Channel No.: {ChannelNo}"));
-        foldout.Add(new Label($"Signal Type: {SignalType}"));
-        foldout.Add(new Label($"Unit: {Unit}"));
-        foldout.Add(new Label($"Range: {Range}"));
-        foldout.Add(new Label($"AHH: {AHH}"));
-        foldout.Add(new Label($"AH: {AH}"));
-        foldout.Add(new Label($"AL: {AL}"));
-        foldout.Add(new Label($"ALL: {ALL}"));
-        foldout.Add(new Label($"Alarm Number Threshold: {NumAlarmsLimit}"));
-        foldout.Add(new Label($"Topic: {Topic}"));
-        foldout.Add(new Label($"Topic ID: {TopicID}"));
-
-        return foldout;
+        _foldout.Add(new Label($"Tag: {Tag}"));
+        _foldout.Add(new Label($"Device No.: {DeviceNo}"));
+        _foldout.Add(new Label($"Channel No.: {ChannelNo}"));
+        _foldout.Add(new Label($"Signal Type: {SignalType}"));
+        _foldout.Add(new Label($"Unit: {Unit}"));
+        _foldout.Add(new Label($"Range: {Range}"));
+        _foldout.Add(new Label($"AHH: {AHH}"));
+        _foldout.Add(new Label($"AH: {AH}"));
+        _foldout.Add(new Label($"AL: {AL}"));
+        _foldout.Add(new Label($"ALL: {ALL}"));
+        _foldout.Add(new Label($"Alarm Number Threshold: {NumAlarmsLimit}"));
+        _foldout.Add(new Label($"Topic: {Topic}"));
+        _foldout.Add(new Label($"Topic ID: {TopicID}"));
     }
 
     public void SetLiveData(bool running = false, float processValue = (float)0.0, bool alarmActive = false, int numAlarms = 0, bool numAlarmsAboveLimit = false)
@@ -179,22 +144,6 @@ public class TopicContainer
         AlarmActive = alarmActive;
         NumAlarms = numAlarms;
         NumAlarmsAboveLimit = numAlarmsAboveLimit;
-
-        if (customFoldout != null)
-        {
-            if (AlarmActive)
-            {
-                customFoldout.style.color = new StyleColor(Color.red);
-            }
-            else if (NumAlarmsAboveLimit)
-            {
-                customFoldout.style.color = new StyleColor(Color.yellow);
-            }
-            else
-            {
-                customFoldout.style.color = new StyleColor(Color.black);
-            }
-        }
     }
 }
 

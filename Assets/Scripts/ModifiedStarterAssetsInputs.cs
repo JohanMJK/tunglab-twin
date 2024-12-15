@@ -17,16 +17,19 @@ namespace StarterAssets
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
-		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked;
-		public bool cursorInputForLook;
+		//private bool cursorLocked;
+		private bool cursorInputForLook;
 
-		void Update()
+
+        void Update()
 		{
-            cursorLocked = ModeSwitcher.cursorLocked;
-			cursorInputForLook = ModeSwitcher.cursorInputForLook;
-		}
-
+			cursorInputForLook = ModeSwitcher.cursorLocked;
+            
+			if (Input.GetKeyDown(KeyCode.M) && !cursorInputForLook)
+            {
+                LookInput(Vector2.zero);
+            }
+        }
 
 #if ENABLE_INPUT_SYSTEM
         public void OnMove(InputValue value)
@@ -74,15 +77,15 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 		
-		private void OnApplicationFocus(bool hasFocus)
-		{
-			SetCursorState(cursorLocked);
-		}
+		//private void OnApplicationFocus(bool hasFocus)
+		//{
+		//	SetCursorState(cursorLocked);
+		//}
 
-		private void SetCursorState(bool newState)
-		{
-			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-		}
+		//private void SetCursorState(bool newState)
+		//{
+		//	Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+		//}
 	}
 	
 }

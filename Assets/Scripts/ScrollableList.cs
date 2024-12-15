@@ -1,19 +1,17 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-using System;
+﻿using System;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ScrollableList : MonoBehaviour
 {
-    public string SystemName;
-    public GameObject listItemPrefab;
-    public GameObject listItemPrefabYellow;
-    public GameObject listItemPrefabRed;
+    public string systemName;
+    public UnityEngine.UI.Button listItemPrefabGrey;
+    public UnityEngine.UI.Button listItemPrefabYellow;
+    public UnityEngine.UI.Button listItemPrefabRed;
     public GameObject dataBoxPrefab;
     public Transform contentParent;
 
-    public ScrollableList() { }
 
     void Start()
     {
@@ -24,37 +22,29 @@ public class ScrollableList : MonoBehaviour
     {
         await DatabaseManager.PopulateListsDone();
 
-        var contentContainer = contentParent.GetComponent<VerticalLayoutGroup>();
-        var textFinderButton = GetComponent<ListItemPrefabButton>();
-
+        VerticalLayoutGroup contentContainer = contentParent.GetComponent<VerticalLayoutGroup>();
         try
         {
-            foreach (var container in DatabaseManager.LiveTopicContainers)
+            foreach (var container in DatabaseManager.LiveContainers)
             {
-                if (container.SystemName == SystemName)
+                if (container.SystemName == systemName)
                 {
-                    TextMeshProUGUI label;
-                    if (container.AlarmActive) 
-                    { 
-                        Instantiate(listItemPrefabRed, contentParent.transform);
-                        label = listItemPrefabRed.GetComponent<TextMeshProUGUI>();
-                    }
-                    else if (container.NumAlarmsAboveLimit) 
-                    { 
-                        Instantiate(listItemPrefabYellow, contentParent.transform);
-                        label = listItemPrefabYellow.GetComponent<TextMeshProUGUI>();
-                    }
-                    else 
-                    { 
-                        Instantiate(listItemPrefab, contentParent.transform);
-                        label = listItemPrefab.GetComponent<TextMeshProUGUI>();
-                    }
+                    Button instantiatedButton = Instantiate(listItemPrefabGrey, contentParent.transform);
+                    //if (container.AlarmActive)
+                    //{
+                    //    instantiatedButton = Instantiate(listItemPrefabRed, contentParent.transform);
 
-                    label.text = container.Description;
-                    label.fontSize = 7;
-                    label.color = Color.black;
-
-                    Debug.Log($"Added: {container.Description}");
+                    //}
+                    //else if (container.NumAlarmsAboveLimit)
+                    //{
+                    //    instantiatedButton = Instantiate(listItemPrefabYellow, contentParent.transform);
+                    //}
+                    //else
+                    //{
+                    //    instantiatedButton = Instantiate(listItemPrefabGrey, contentParent.transform);
+                    //}
+                    instantiatedButton.GetComponentInChildren<TextMeshProUGUI>().text = container.Description; ;
+                    instantiatedButton.GetComponent<ListItemPrefabController>().topicContainer = container;
                 }
             }
         }
@@ -64,18 +54,8 @@ public class ScrollableList : MonoBehaviour
         }
     }
 
-    void OnListItemClicked(string item)
-    {
-        Debug.Log($"Clicked: {item}");
-
-        //var dataBox = Instantiate(dataBoxPrefab);
-
-        //dataBox.name = $"DataBox_{item}";
-        //dataBox.transform.position = Vector3.zero;
-    }
-
     private void Update()
-    {
+    {   
         transform.LookAt(Camera.main.transform);
         transform.Rotate(0, 180, 0);
     }

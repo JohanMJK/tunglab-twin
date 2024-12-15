@@ -3,40 +3,39 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using System.Text;
+using UnityEditor.Search;
 
 
 public static class DatabaseManager
 {
-    public static List<TopicContainer> StaticTopicContainers;
-    public static List<TopicContainer> LiveTopicContainers;
-    public static List<string> SystemNamesList;
-    public static List<int> RedTopicsList;
-    public static List<int> YellowTopicsList;
+    public static List<TopicContainer> StaticContainers;
+    public static List<TopicContainer> LiveContainers;
+    public static List<string> SystemNames;
 
     private static bool populateListsDone;
 
-
-    //private static readonly string connectionString = "Server=127.0.0.1;Database=Gruppe4;User ID=root;Password=password;";
-    private static readonly string connectionString = "Server=192.168.38.100;Database=Gruppe4;User ID=remoteuser;Password=123456;";
+    //public static string connectionString = "Server=127.0.0.1;Database=Gruppe4;User ID=root;Password=password;";
+    public static string connectionString;
 
     public static async Task<Task> PopulateLists()
     {
         populateListsDone = false;
-        StaticTopicContainers = new List<TopicContainer>();
-        LiveTopicContainers = new List<TopicContainer>();
-        SystemNamesList = new List<string>();
+        StaticContainers = new List<TopicContainer>();
+        LiveContainers = new List<TopicContainer>();
+        SystemNames = new List<string>();
 
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        try
         {
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync();
-                Debug.Log("Database initialization connection successful.");
+                //Debug.Log("Database initialization connection successful.");
 
                 string query = @"SELECT * FROM tunglabdata_static LEFT JOIN tunglabdata_live
-                                ON (tunglabdata_static.topic_id = tunglabdata_live.topic_id) 
-                                WHERE tunglabdata_live.topic_id IS NULL
-                                LIMIT 1000";
+                                    ON (tunglabdata_static.topic_id = tunglabdata_live.topic_id) 
+                                    WHERE tunglabdata_live.topic_id IS NULL
+                                    LIMIT 1000";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -44,9 +43,9 @@ public static class DatabaseManager
                     while (await reader.ReadAsync())
                     {
                         string sysName = (reader["systemname"] as string) ?? "UNKNOWN";
-                        if (!SystemNamesList.Contains(sysName)) { SystemNamesList.Add(sysName); };
+                        if (!SystemNames.Contains(sysName)) { SystemNames.Add(sysName); }
 
-                        StaticTopicContainers.Add(new TopicContainer(
+                        StaticContainers.Add(new TopicContainer(
                         systemName: sysName,
                         topic: (reader["topic"] as string) ?? "N/A",
                         topicID: (reader["topic_id"] as int?) ?? 0,
@@ -66,28 +65,13 @@ public static class DatabaseManager
                         ));
                     }
                 }
-
-
             }
-            catch (MySqlException ex)
-            {
-                Debug.LogError($"Database error: {ex.Message}");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
-        }
-
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
-        {
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync();
-
                 string query = @"SELECT * FROM tunglabdata_live LEFT JOIN tunglabdata_static 
-                    ON (tunglabdata_live.topic_id = tunglabdata_static.topic_id)
-                    LIMIT 1000";
+                        ON (tunglabdata_live.topic_id = tunglabdata_static.topic_id)
+                        LIMIT 1000";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -95,9 +79,9 @@ public static class DatabaseManager
                     while (await reader.ReadAsync())
                     {
                         string sysName = (reader["systemname"] as string) ?? "UNKNOWN";
-                        if (!SystemNamesList.Contains(sysName)) { SystemNamesList.Add(sysName); };
+                        if (!SystemNames.Contains(sysName)) { SystemNames.Add(sysName); }
 
-                        LiveTopicContainers.Add(new TopicContainer(
+                        LiveContainers.Add(new TopicContainer(
                         systemName: sysName,
                         topic: (reader["topic"] as string) ?? "N/A",
                         topicID: (reader["topic_id"] as int?) ?? 0,
@@ -123,17 +107,13 @@ public static class DatabaseManager
                     }
                 }
             }
-            catch (MySqlException ex)
-            {
-                Debug.LogError($"Database error: {ex.Message}");
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
-            populateListsDone = true;
-            return Task.CompletedTask;
         }
+        catch (MySqlException e)
+        {
+            Debug.LogError($"Database error: {e.Message}");
+        }
+        populateListsDone = true;
+        return Task.CompletedTask;
     }
 
     public static async Task<Task> UpdateLiveData()
@@ -148,27 +128,24 @@ public static class DatabaseManager
                         WHERE topic_id = @topic_id
                         LIMIT 1";
 
-                foreach (TopicContainer dataContainer in LiveTopicContainers)
+                foreach (TopicContainer container in LiveContainers)
                 {
-                    
                     await connection.OpenAsync();
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
-                        
-                        command.Parameters.AddWithValue("@topic_id", dataContainer.TopicID);
+                        command.Parameters.AddWithValue("@topic_id", container.TopicID);
                         
                         var reader = await command.ExecuteReaderAsync();
                         while (await reader.ReadAsync())
                         {
                             //Debug.Log("Database update connection successful.");
-                            dataContainer.SetLiveData(
+                            container.SetLiveData(
                                     running: (((reader["running"] as int?) ?? 0) == 1),
                                     processValue: (float)((reader["processvalue"] as float?) ?? 0.0),
                                     alarmActive: (((reader["alarm"] as int?) ?? 0) == 1),
                                     numAlarms: (reader["numalarms"] as int?) ?? 0,
                                     numAlarmsAboveLimit: (((reader["numalarms_above_lim"] as int?) ?? 0) == 1)
                                 );
-                            
                         }
                     }
                     await connection.CloseAsync();
@@ -177,10 +154,6 @@ public static class DatabaseManager
             catch (MySqlException ex)
             {
                 Debug.LogError($"Database error: {ex.Message}");
-            }
-            finally
-            {
-                await connection.CloseAsync();
             }
             return Task.CompletedTask;
         }
@@ -193,5 +166,22 @@ public static class DatabaseManager
             await Task.Delay(500);
         }
         return Task.CompletedTask;
+    }
+
+    public static bool TestConnection()
+    {
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            try
+            {
+                connection.Open();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                Debug.LogError($"Database error: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
