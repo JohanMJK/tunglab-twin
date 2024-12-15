@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 3509713412072365193}
   - component: {fileID: -3133699993297042973}
   m_Layer: 7
-  m_Name: ListItemPrefabGrey
+  m_Name: ListItemPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
